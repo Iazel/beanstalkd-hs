@@ -16,3 +16,9 @@ type Amount = Word32
 data GenericResponse
 	= OK
 	| NotFound
+
+data Error
+	= OutOfMemory
+	| InternalError
+	| BadFormat
+	| UnknownCommand
