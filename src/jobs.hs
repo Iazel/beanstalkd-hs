@@ -3,7 +3,7 @@ module Beanstalkd.Jobs where
 
 import Utils.Types
 import Data.Word (Word32)
-import Network.Socket.Bytestring (recv, send)
+import Network.Socket.ByteString (recv, send)
 import Data.ByteString.Builder (toLazyByteString)
 
 data PutResponse
@@ -16,9 +16,9 @@ data PutResponse
 
 instance ParseResponse PutResponse where
     parse msg
-        | (take 4 msg) == "INSERT " = Inserted (extractId msg)
-        | (take 4 msg) == "BURIED " = Buried (extractId msg)
-        | otherwise                 = case msg of
+        | isPrefixOf "INSERTED " msg = Inserted (extractId msg)
+        | isPrefixOf "BURIED "   msg = Buried (extractId msg)
+        | otherwise = case msg of
             "DRAINING\r\n"      -> Draining
             "JOB_TOO_BIG\r\n"   -> JobTooBig
             "EXPECTED_CRLF\r\n" -> ExpectedCRLF
@@ -30,19 +30,44 @@ data ReserveResponse
 	| Reserved ID Job
     | Error Error
 
+instance ParseResponse ReserveResponse where
+    parse msg
+        | isPrefixOf "RESERVED " msg = buildReserved msg
+        | otherwise = case msg of
+            "TIMED_OUT\r\n"     -> TimedOut
+            "DEADLINE_SOON\r\n" -> DeadlineSoon
+            otherwise           -> Error $ parse msg
+
 data PeekResponse
 	= Found ID Job
 	| NotFound
     | Error Error
 
+instance ParseResponse PeekResponse where
+    parse "NOT_FOUND\r\n" = NotFound
+    parse msg
+        | isPrefixOf "FOUND " msg = buildFound msg
+        | otherwise = Error $ parse msg
+
 data KickResponse
 	= Kicked Count
     | Error Error
+
+instance ParseResponse KickResponse where
+    parse msg
+        | isPrefixOf "KICKED " msg = extractCount msg
+        | otherwise = Error $ parse msg
 
 data JobStatsResponse
 	= OK JobStats
 	| NotFound
     | Error Error
+
+instance ParseResponse JobStatsResponse where
+    parse "NOT_FOUND\r\n" = NotFound
+    parse msg
+        | isPrefixOf "OK " msg = buildStats msg
+        | otherwise = Error $ parse msg
 
 data State = Ready | Delayed | Reserved | Buried
 data JobStats = JobStats

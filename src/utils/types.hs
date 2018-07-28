@@ -2,10 +2,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Utils.Types where
 
+import Prelude hiding (length)
 import Data.Word (Word32)
-import Data.ByteString (ByteString)
+import Data.ByteString (ByteString, length)
 import Network.Socket (Socket)
-import Data.ByteString.Builder (Builder)
+import Data.ByteString.Builder (Builder, intDec, word32Dec, string7, byteString)
 
 newtype ID = ID Word32
     deriving (Show, ToByteStringBuilder)
@@ -27,15 +28,15 @@ type Count = Word32
 type Amount = Word32
 
 data GenericResponse
-	= OK
-	| NotFound
+    = OK
+    | NotFound
     | Error Error
 
 data Error
-	= OutOfMemory
-	| InternalError
-	| BadFormat
-	| UnknownCommand
+    = OutOfMemory
+    | InternalError
+    | BadFormat
+    | UnknownCommand
     | UnknownResponse ByteString
 
 class ToByteStringBuilder a where
@@ -51,10 +52,10 @@ sep = string7 "\r\n"
 jobLen :: Job -> Builder
 jobLen (Job body) = intDec $ length body
 
-class ParseReponse a where
+class ParseResponse a where
     parse :: ByteString -> a
 
-instance ParseReponse Error where
+instance ParseResponse Error where
     parse msg = case msg of
         "OUT_OF_MEMORY\r\n"   -> OutOfMemory
         "INTERNAL_ERROR\r\n"  -> InternalError
@@ -69,3 +70,6 @@ instance ParseResponse GenericResponse where
         "DELETED\r\n"   -> OK
         "NOT_FOUND\r\n" -> NotFound
         otherwise       -> Error $ parse msg
+
+extractId :: ByteString -> ID 
+extractId = undefined
