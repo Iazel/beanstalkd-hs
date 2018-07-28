@@ -1,6 +1,8 @@
 module Beanstalkd.System where
 
 import Utils.Types
+import qualified Network.Socket
+import qualified Control.Exception.Base as E
 
 data SystemCommand
 	= Stats
@@ -12,6 +14,9 @@ data SystemCommand
 
 data Response a
 	= OK a
+
+type Hostname = String
+type Port = String
 
 type ListTubeResponse
 	= Response [Tube]
@@ -78,3 +83,24 @@ data SystemStats = Stats {
 	binlogRecordsWritten :: Count,
 	binlogRecordsMigrated :: Count,
 }
+
+connect Hostname -> Port -> IO Conn
+connect host port = do
+    addr <- getAddr
+    sock <- Socket.socket
+        (Socket.addrFamily addr)
+        (Socket.addrSocketType addr)
+        (Socket.addrProtocol addr)
+    connect sock (addrAddress addr)
+    return (Conn sock)
+    where
+        getAddr = do
+            let hints = Socket.defaultHints { addrSocketType = Stream }
+            addr:_ <- Socket.getAddrInfo (Just hints) (Just host) (Just port)
+            return addr
+
+close :: Conn -> IO ()
+close (Conn socket) = Socket.close socket
+
+withConn :: Hostname -> Port -> (Conn -> IO a) -> IO a
+withConn host port f = E.bracket (connect host port) close f
