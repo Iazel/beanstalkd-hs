@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f194b401a5f4d378d2a4dfe69452afbda18b3d93b94d3428f7984f77d161d26c
+-- hash: fa87b5a832f7c7ba7b7950eb88e29d893caaefe19cef9691822523e7059abfea
 
 name:           Beanstalkd
 version:        0.1.0.0
@@ -25,12 +25,15 @@ source-repository head
   location: https://github.com/githubuser/Beanstalkd
 
 library
+  exposed-modules:
+      GenericError
   other-modules:
       Paths_Beanstalkd
   hs-source-dirs:
       src
   build-depends:
-      base >=4.7 && <5
+      attoparsec ==0.13.*
+    , base >=4.7 && <5
     , bytestring ==0.10.*
     , network ==2.6.*
   default-language: Haskell2010
@@ -44,6 +47,7 @@ executable Beanstalkd-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Beanstalkd
+    , attoparsec ==0.13.*
     , base >=4.7 && <5
     , bytestring ==0.10.*
     , network ==2.6.*
@@ -59,6 +63,7 @@ test-suite Beanstalkd-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Beanstalkd
+    , attoparsec ==0.13.*
     , base >=4.7 && <5
     , bytestring ==0.10.*
     , network ==2.6.*

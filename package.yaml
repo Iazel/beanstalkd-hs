@@ -23,6 +23,7 @@ dependencies:
 - base >= 4.7 && < 5
 - bytestring == 0.10.*
 - network == 2.6.*
+- attoparsec == 0.13.*
 
 library:
   source-dirs: src

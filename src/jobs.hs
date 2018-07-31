@@ -6,14 +6,6 @@ import Data.Word (Word32)
 import Network.Socket.ByteString (recv, send)
 import Data.ByteString.Builder (toLazyByteString)
 
-data PutResponse
-	= Inserted ID
-	| Buried ID
-	| JobTooBig
-	| Draining
-	| ExpectedCRLF
-    | Error Error
-
 instance ParseResponse PutResponse where
     parse msg
         | isPrefixOf "INSERTED " msg = Inserted (extractId msg)
@@ -86,23 +78,6 @@ data JobStats = JobStats
 	, buries   :: Count
 	, kicks    :: Count
 	}
-
-put :: Priority -> Delay -> TRR -> Conn -> Job -> IO PutResponse
-put prio delay trr (Conn sock) job = do
-    send request
-    response <- recv sock
-    return $ parse response
-    where request = toLazyByteString
-            $  (conv prio)
-            <> (conv delay) 
-            <> (conv trr)
-            <> (jobLen job) 
-            <> sep 
-            <> (conv job)
-            <> sep
-
-puts :: Conn -> Job -> IO PutResponse
-puts = put (Priority 100) (Seconds 0) (TRR 60)
 
 reserve :: Conn -> IO ReserveResponse
 reserveWithTimeout :: Conn -> Seconds -> IO ReserveResponse
