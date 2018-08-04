@@ -6,16 +6,23 @@ module Beanstalkd.Common
     )
     where
 
-import Prelude hiding (length)
+import Prelude hiding (id, length)
 import Data.Word (Word64, Word32)
 import Data.ByteString (ByteString, length)
 import Network.Socket (Socket)
 import Beanstalkd.Error (Error)
 import Data.ByteString.Builder (Builder, intDec, string7)
 import Beanstalkd.Internals.ToByteStringBuilder (ToByteStringBuilder)
+import Data.Attoparsec.ByteString.Char8 (Parser, many1, digit)
 
 newtype ID = ID Word64
     deriving (Show, ToByteStringBuilder)
+
+parseId :: Parser ID
+parseId = do
+    id <- many1 digit
+    return $ ID (read id)
+
 newtype Priority = Priority Word32
     deriving (Show, ToByteStringBuilder)
 newtype Seconds = Seconds Word32

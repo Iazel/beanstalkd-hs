@@ -2,10 +2,13 @@ module Main where
 
 import Data.ByteString.Char8
 import Beanstalkd.Common (Job(..))
-import Beanstalkd.System (withConn)
+import Beanstalkd.System (connect)
 import Beanstalkd.Jobs.Put (puts)
+import Beanstalkd.Jobs.Reserve (reserve)
 
 main :: IO ()
 main = do
-    resp <- withConn "localhost" "11300" $ puts (Job $ pack "Hello, World!")
-    print resp
+    conn <- connect "localhost" "11300" 
+    puts (Job $ pack "Hello, World!") conn >>= print
+    reserve conn >>= print
+

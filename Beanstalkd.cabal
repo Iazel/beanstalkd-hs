@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: dae7d4008d5b0052c3e48ba6712c21904a4d7f511cc4d3cf46e17d1be472fd05
+-- hash: d5bd2848019362ff633ed1509504781d389749fc29a0588e4ff2c9309075623c
 
 name:           Beanstalkd
 version:        0.1.0.0
@@ -32,6 +32,7 @@ library
       Beanstalkd.Internals.ParseResponse
       Beanstalkd.Internals.ToByteStringBuilder
       Beanstalkd.Jobs.Put
+      Beanstalkd.Jobs.Reserve
       Beanstalkd.System
   other-modules:
       Paths_Beanstalkd

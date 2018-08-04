@@ -28,10 +28,7 @@ instance ParseResponse PutResponse where
         <|> (value "EXPECTED_CRLF\r\n" ExpectedCRLF)
         where
             withId str constr =
-                P.string str >> parseId constr <* eol
-            parseId constr = do
-                id <- P.many1 P.digit
-                return $ constr $ ID (read id)
+                P.string str >> (parseId >>= return . constr) <* eol
 
 put :: Priority -> Delay -> TTR -> Job -> Conn -> IO (Response PutResponse)
 put prio delay ttr job (Conn sock) = do
