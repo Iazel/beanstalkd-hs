@@ -15,7 +15,7 @@ import Data.ByteString.Builder (Builder, intDec, string7)
 import Beanstalkd.Internals.ToByteStringBuilder (ToByteStringBuilder)
 
 newtype ID = ID Word64
-    deriving (Show, Read, ToByteStringBuilder)
+    deriving (Show, ToByteStringBuilder)
 newtype Priority = Priority Word32
     deriving (Show, ToByteStringBuilder)
 newtype Seconds = Seconds Word32

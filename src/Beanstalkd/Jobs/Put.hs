@@ -1,13 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Beanstalkd.Jobs.Put where
 
+import Prelude hiding (id)
 import Beanstalkd.Common
 import Beanstalkd.Internals.ToByteStringBuilder (conv)
 import Beanstalkd.Internals.ParseResponse
 import Beanstalkd.Internals.Parser (value, eol)
 import Network.Socket.ByteString (recv, send)
 import Data.ByteString.Lazy (toStrict)
-import Data.ByteString.Builder (toLazyByteString)
+import Data.ByteString.Builder (toLazyByteString, char7, string7)
 import Control.Applicative ((<|>), (<*))
 import qualified Data.Attoparsec.ByteString.Char8 as P
 
@@ -17,6 +18,7 @@ data PutResponse
     | JobTooBig
     | Draining
     | ExpectedCRLF
+    deriving Show
 
 instance ParseResponse PutResponse where
     parser = (withId "INSERTED " Inserted)
@@ -29,20 +31,25 @@ instance ParseResponse PutResponse where
                 P.string str >> parseId constr <* eol
             parseId constr = do
                 id <- P.many1 P.digit
-                return $ constr (read id)
+                return $ constr $ ID (read id)
 
 put :: Priority -> Delay -> TTR -> Job -> Conn -> IO (Response PutResponse)
 put prio delay ttr job (Conn sock) = do
-    send sock request
+    _ <- send sock request
     response <- recv sock 1024
     return $ parse response
     where request = toStrict . toLazyByteString
-            $  (conv prio)
+            $  string7 "put "
+            <> conv prio
+            <> char7 ' '
             <> (conv delay) 
+            <> char7 ' '
             <> (conv ttr)
+            <> char7 ' '
             <> (jobLen job) 
             <> sep 
             <> (conv job)
             <> sep
 
+puts :: Job -> Conn -> IO (Response PutResponse)
 puts = put (Priority 100) (Seconds 0) (TTR 60)
