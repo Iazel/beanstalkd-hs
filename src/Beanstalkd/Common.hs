@@ -1,9 +1,8 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Beanstalkd.Common 
-    (
-        module Beanstalkd.Common,
-        module Beanstalkd.Error,
+    ( module Beanstalkd.Common
+    , module Beanstalkd.Error
     )
     where
 
@@ -13,7 +12,6 @@ import Data.ByteString (ByteString, length)
 import Network.Socket (Socket)
 import Beanstalkd.Error (Error)
 import Data.ByteString.Builder (Builder, intDec, string7)
-import Beanstalkd.Internals.ParseResponse (ParseResponse)
 import Beanstalkd.Internals.ToByteStringBuilder (ToByteStringBuilder)
 
 newtype ID = ID Word64
@@ -41,6 +39,8 @@ data GenericResponse
     = OK
     | NotFound
 
+sep :: Builder
 sep = string7 "\r\n"
+
 jobLen :: Job -> Builder
 jobLen (Job body) = intDec $ length body

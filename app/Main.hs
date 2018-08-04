@@ -2,7 +2,7 @@
 module Main where
 
 import Data.ByteString
-import Beanstalkd.Common (Job)
+import Beanstalkd.Common (Job(..))
 import Beanstalkd.System (withConn)
 import Beanstalkd.Jobs.Put (puts)
 
