@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Beanstalkd.Internals.Parser where
 
 import Data.ByteString (ByteString)

@@ -24,6 +24,7 @@ dependencies:
 - bytestring == 0.10.*
 - network == 2.6.*
 - attoparsec == 0.13.*
+- time-units
 
 library:
   source-dirs: src

@@ -1,15 +1,23 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
-module Beanstalkd.Common where
+module Beanstalkd.Common 
+    (
+        module Beanstalkd.Common,
+        module Beanstalkd.Error,
+    )
+    where
 
 import Prelude hiding (length)
-import Data.Word (Word32)
+import Data.Word (Word64, Word32)
 import Data.ByteString (ByteString, length)
 import Network.Socket (Socket)
-import Data.ByteString.Builder (Builder, intDec, word32Dec, string7, byteString)
+import Beanstalkd.Error (Error)
+import Data.ByteString.Builder (Builder, intDec, string7)
+import Beanstalkd.Internals.ParseResponse (ParseResponse)
+import Beanstalkd.Internals.ToByteStringBuilder (ToByteStringBuilder)
 
-newtype ID = ID Word32
-    deriving (Show, ToByteStringBuilder)
+newtype ID = ID Word64
+    deriving (Show, Read, ToByteStringBuilder)
 newtype Priority = Priority Word32
     deriving (Show, ToByteStringBuilder)
 newtype Seconds = Seconds Word32
@@ -27,17 +35,11 @@ type Delay = Seconds
 type Count = Word32
 type Amount = Word32
 
+type Response a = Either Error a
+
 data GenericResponse
     = OK
     | NotFound
-
-instance ParseResponse GenericResponse where
-    parse msg = case msg of
-        "BURIED\r\n"    -> OK
-        "TOUCHED\r\n"   -> OK
-        "DELETED\r\n"   -> OK
-        "NOT_FOUND\r\n" -> NotFound
-        otherwise       -> Error $ parse msg
 
 sep = string7 "\r\n"
 jobLen :: Job -> Builder
