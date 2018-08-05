@@ -42,10 +42,6 @@ type Amount = Word32
 
 type Response a = Either Error a
 
-data GenericResponse
-    = OK
-    | NotFound
-
 sep :: Builder
 sep = string7 "\r\n"
 

@@ -14,6 +14,7 @@ data Error
     | UnknownResponse ByteString
     deriving Show
 
+parser :: P.Parser Error
 parser = (value "OUT_OF_MEMORY\r\n"  OutOfMemory)
     <|> (value "INTERNAL_ERROR\r\n"  InternalError)
     <|> (value "BAD_FORMAT\r\n"      BadFormat)

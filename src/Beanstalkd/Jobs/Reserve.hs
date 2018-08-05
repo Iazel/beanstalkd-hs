@@ -2,7 +2,6 @@
 module Beanstalkd.Jobs.Reserve where
 
 import Prelude hiding (id)
-import Data.ByteString
 import Network.Socket.ByteString (recv, send)
 import Beanstalkd.Common
 import Control.Applicative ((<|>), (<*), (*>))
