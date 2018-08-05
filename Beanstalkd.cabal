@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a9bd7753afb87264fa16fc8cc18e96ae9235f74b174880d07b7718dbf646ecd8
+-- hash: 83758ea0748b029417e158584b8b7b2a4872facf9ad64a082c3b2d4c81c66621
 
 name:           Beanstalkd
 version:        0.1.0.0
@@ -35,17 +35,20 @@ library
       Beanstalkd.Jobs.Put
       Beanstalkd.Jobs.Release
       Beanstalkd.Jobs.Reserve
+      Beanstalkd.Jobs.Stats
       Beanstalkd.System
   other-modules:
       Paths_Beanstalkd
   hs-source-dirs:
       src
   build-depends:
-      attoparsec ==0.13.*
+      aeson ==1.3.*
+    , attoparsec ==0.13.*
     , base >=4.7 && <5
     , bytestring ==0.10.*
     , network ==2.6.*
     , time-units
+    , yaml ==0.8.*
   default-language: Haskell2010
 
 executable Beanstalkd-exe
@@ -57,11 +60,13 @@ executable Beanstalkd-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Beanstalkd
+    , aeson ==1.3.*
     , attoparsec ==0.13.*
     , base >=4.7 && <5
     , bytestring ==0.10.*
     , network ==2.6.*
     , time-units
+    , yaml ==0.8.*
   default-language: Haskell2010
 
 test-suite Beanstalkd-test
@@ -74,9 +79,11 @@ test-suite Beanstalkd-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Beanstalkd
+    , aeson ==1.3.*
     , attoparsec ==0.13.*
     , base >=4.7 && <5
     , bytestring ==0.10.*
     , network ==2.6.*
     , time-units
+    , yaml ==0.8.*
   default-language: Haskell2010

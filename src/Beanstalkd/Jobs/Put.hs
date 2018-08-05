@@ -7,8 +7,7 @@ import Beanstalkd.Internals.ToByteStringBuilder (conv)
 import Beanstalkd.Internals.ParseResponse
 import Beanstalkd.Internals.Parser (value, eol)
 import Network.Socket.ByteString (recv, send)
-import Data.ByteString.Lazy (toStrict)
-import Data.ByteString.Builder (toLazyByteString, char7, string7)
+import Data.ByteString.Builder (char7, string7)
 import Control.Applicative ((<|>), (<*))
 import qualified Data.Attoparsec.ByteString.Char8 as P
 
@@ -35,17 +34,17 @@ put prio delay ttr job (Conn sock) = do
     _ <- send sock request
     response <- recv sock 1024
     return $ parse response
-    where request = toStrict . toLazyByteString
+    where request = toBStr
             $  string7 "put "
             <> conv prio
             <> char7 ' '
-            <> (conv delay) 
+            <> conv delay 
             <> char7 ' '
-            <> (conv ttr)
+            <> conv ttr
             <> char7 ' '
-            <> (jobLen job) 
+            <> jobLen job 
             <> sep 
-            <> (conv job)
+            <> conv job
             <> sep
 
 puts :: Job -> Conn -> IO (Response PutResponse)

@@ -1,5 +1,6 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Beanstalkd.Common 
     ( module Beanstalkd.Common
     , module Beanstalkd.Error
@@ -11,7 +12,8 @@ import Data.Word (Word64, Word32)
 import Data.ByteString (ByteString, length)
 import Network.Socket (Socket)
 import Beanstalkd.Error (Error)
-import Data.ByteString.Builder (Builder, intDec, string7)
+import Data.ByteString.Lazy (toStrict)
+import Data.ByteString.Builder (toLazyByteString, Builder, intDec, string7)
 import Beanstalkd.Internals.ToByteStringBuilder (ToByteStringBuilder)
 import Data.Attoparsec.ByteString.Char8 (Parser, many1, digit)
 
@@ -44,6 +46,9 @@ type Response a = Either Error a
 
 sep :: Builder
 sep = string7 "\r\n"
+
+toBStr :: Builder -> ByteString
+toBStr = toStrict . toLazyByteString 
 
 jobLen :: Job -> Builder
 jobLen (Job body) = intDec $ length body

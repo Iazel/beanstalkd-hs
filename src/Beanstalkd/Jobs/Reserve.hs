@@ -6,8 +6,7 @@ import Network.Socket.ByteString (recv, send)
 import Beanstalkd.Common
 import Beanstalkd.Internals.ToByteStringBuilder (conv)
 import Control.Applicative ((<|>), (<*), (*>))
-import Data.ByteString.Lazy (toStrict)
-import Data.ByteString.Builder (toLazyByteString, char7, string7)
+import Data.ByteString.Builder (char7, string7)
 import Beanstalkd.Internals.ParseResponse
 import Beanstalkd.Internals.Parser (value, eol)
 import qualified Data.Attoparsec.ByteString.Char8 as P
@@ -25,15 +24,14 @@ instance ParseResponse ReserveResponse where
         where
             parseJob = parseLen >>= mkJob
             parseLen = P.char ' ' *> P.decimal <* eol
-            mkJob len = P.take len >>= (return . Job)
+            mkJob len = Job <$> P.take len
 
 reserve :: Conn -> IO (Response ReserveResponse)
 reserve = doReserve "reserve\r\n"
 
 reserveWithTimeout :: Seconds -> Conn -> IO (Response ReserveResponse)
 reserveWithTimeout to = doReserve request
-    where request = toStrict $ toLazyByteString $
-            (string7 "reserve-with-timeout ") <> conv to <> sep
+    where request = toBStr $ (string7 "reserve-with-timeout ") <> conv to <> sep
 
 doReserve cmd (Conn sock) = 
     (send sock cmd) >> recv sock 2048 >>= parseResponse

@@ -8,8 +8,7 @@ import Beanstalkd.Internals.ToByteStringBuilder (conv)
 import Beanstalkd.Internals.Parser (value, notFound)
 import Control.Applicative ((<|>))
 import qualified Data.Attoparsec.ByteString.Char8 as P
-import Data.ByteString.Lazy (toStrict)
-import Data.ByteString.Builder (toLazyByteString, string7, char7)
+import Data.ByteString.Builder (string7, char7)
 import Network.Socket.ByteString (recv, send)
 
 data ReleaseResponse = Released | Buried | NotFound deriving Show
@@ -23,7 +22,7 @@ release :: Priority -> Delay -> ID -> Conn -> IO (Response ReleaseResponse)
 release prio delay id (Conn sock) = 
     send sock request >> recv sock 16 >>= return . parse
     where 
-        request = toStrict $ toLazyByteString $
+        request = toBStr $
             (string7 "release ")
             <> conv id 
             <> char7 ' '

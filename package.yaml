@@ -25,6 +25,8 @@ dependencies:
 - network == 2.6.*
 - attoparsec == 0.13.*
 - time-units
+- aeson == 1.3.*
+- yaml == 0.8.*
 
 library:
   source-dirs: src
