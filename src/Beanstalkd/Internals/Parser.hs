@@ -7,8 +7,8 @@ import qualified Data.Attoparsec.ByteString.Char8 as P
 value :: ByteString -> a -> P.Parser a
 value match val = P.string match >> return val
 
-notFound :: P.Parser ByteString
-notFound = P.string "NOT_FOUND\r\n"
+notFound :: a -> P.Parser a
+notFound val = value "NOT_FOUND\r\n" val
 
 eol :: P.Parser ByteString
 eol = P.string "\r\n"
