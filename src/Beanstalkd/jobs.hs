@@ -61,31 +61,10 @@ instance ParseResponse JobStatsResponse where
         | isPrefixOf "OK " msg = buildStats msg
         | otherwise = Error $ parse msg
 
-data State = Ready | Delayed | Reserved | Buried
-data JobStats = JobStats
-	{ id :: ID
-	, tube :: Tube
-	, state :: State
-	, priority :: Priority
-	, age :: Seconds
-	, delay :: Seconds
-	, ttr :: TTR
-	, timeLeft :: Seconds
-	, file :: Word32
-	, reserves :: Count
-	, timeouts :: Count
-	, releases :: Count
-	, buries   :: Count
-	, kicks    :: Count
-	}
-
-reserve :: Conn -> IO ReserveResponse
-reserveWithTimeout :: Conn -> Seconds -> IO ReserveResponse
-
 touch :: Conn -> ID -> IO GenericResponse
 
 delete :: Conn -> ID -> IO GenericResponse
-
+ 
 release :: Conn -> Priority -> Delay -> ID -> IO GenericResponse
 
 bury :: Conn -> Priority -> ID -> IO GenericResponse

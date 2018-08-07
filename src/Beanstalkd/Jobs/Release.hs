@@ -7,7 +7,6 @@ import Beanstalkd.Internals.ParseResponse
 import Beanstalkd.Internals.ToByteStringBuilder (conv)
 import Beanstalkd.Internals.Parser (value, notFound)
 import Control.Applicative ((<|>))
-import qualified Data.Attoparsec.ByteString.Char8 as P
 import Data.ByteString.Builder (string7, char7)
 import Network.Socket.ByteString (recv, send)
 

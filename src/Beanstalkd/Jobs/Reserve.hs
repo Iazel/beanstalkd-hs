@@ -6,7 +6,8 @@ import Network.Socket.ByteString (recv, send)
 import Beanstalkd.Common
 import Beanstalkd.Internals.ToByteStringBuilder (conv)
 import Control.Applicative ((<|>), (<*), (*>))
-import Data.ByteString.Builder (char7, string7)
+import Data.ByteString (ByteString)
+import Data.ByteString.Builder (string7)
 import Beanstalkd.Internals.ParseResponse
 import Beanstalkd.Internals.Parser (value, eol)
 import qualified Data.Attoparsec.ByteString.Char8 as P
@@ -33,6 +34,7 @@ reserveWithTimeout :: Seconds -> Conn -> IO (Response ReserveResponse)
 reserveWithTimeout to = doReserve request
     where request = toBStr $ (string7 "reserve-with-timeout ") <> conv to <> sep
 
+doReserve :: ByteString -> Conn -> IO (Response ReserveResponse)
 doReserve cmd (Conn sock) = 
     (send sock cmd) >> recv sock 2048 >>= parseResponse
     where

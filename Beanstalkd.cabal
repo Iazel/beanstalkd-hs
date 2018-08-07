@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 83758ea0748b029417e158584b8b7b2a4872facf9ad64a082c3b2d4c81c66621
+-- hash: 85fa739f6f92edc6994001f0c9cd46b3f8bff80c351e58aa9f4b70668099d335
 
 name:           Beanstalkd
 version:        0.1.0.0
@@ -47,6 +47,7 @@ library
     , base >=4.7 && <5
     , bytestring ==0.10.*
     , network ==2.6.*
+    , text ==1.2.*
     , time-units
     , yaml ==0.8.*
   default-language: Haskell2010
@@ -65,6 +66,7 @@ executable Beanstalkd-exe
     , base >=4.7 && <5
     , bytestring ==0.10.*
     , network ==2.6.*
+    , text ==1.2.*
     , time-units
     , yaml ==0.8.*
   default-language: Haskell2010
@@ -84,6 +86,7 @@ test-suite Beanstalkd-test
     , base >=4.7 && <5
     , bytestring ==0.10.*
     , network ==2.6.*
+    , text ==1.2.*
     , time-units
     , yaml ==0.8.*
   default-language: Haskell2010
