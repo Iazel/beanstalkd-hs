@@ -31,7 +31,7 @@ instance FromJSON State where
                 "delayed"  -> return Delayed
                 "reserved" -> return Reserved
                 "buried"   -> return Buried
-                _          -> fail ("Unknown state " ++ s)
+                _          -> fail ("Invalid value for State: " ++ s)
 
 data JobStats = JobStats
     { id       :: ID
