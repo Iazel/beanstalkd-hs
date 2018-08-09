@@ -68,5 +68,6 @@ toBStr = toStrict . toLazyByteString
 jobLen :: Job -> Builder
 jobLen (Job body) = intDec $ length body
 
+jobStatsLabel :: String -> String
 jobStatsLabel "timeLeft" = "time-left"
 jobStatsLabel x = x

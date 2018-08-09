@@ -3,13 +3,11 @@
 module Beanstalkd.Jobs.Stats where
 
 import Prelude hiding (id)
-import Data.ByteString (ByteString)
 import Data.Text (unpack)
 import Data.Aeson (FromJSON(..))
 import qualified Data.Aeson.TH as ATH
 import Data.Aeson.Types as A
-import Data.Yaml (decodeEither', decodeThrow)
-import Data.Either (fromRight)
+import qualified Data.Yaml as Y
 import Beanstalkd.Common
 import Beanstalkd.Internals.Parser (notFound, eol)
 import Beanstalkd.Internals.ParseResponse
@@ -55,13 +53,21 @@ $(ATH.deriveFromJSON
     ATH.defaultOptions { ATH.fieldLabelModifier = jobStatsLabel }
     ''JobStats)
 
-data JobStatsResponse = Ok JobStats | NotFound deriving Show
+data JobStatsResponse
+    = Ok JobStats 
+    | InvalidYaml Y.ParseException
+    | NotFound 
+    deriving Show
+
 instance ParseResponse JobStatsResponse where
     parser = notFound NotFound
-        <|> P.string "OK " *> (Ok <$> parseStats) <* eol
+        <|> P.string "OK " *> parseStats <* eol
         where
-            parseStats = (fromRight undefined . decodeEither') <$> (parseLen >>= P.take)
+            parseStats = (resp . Y.decodeEither') <$> (parseLen >>= P.take)
             parseLen = P.decimal <* eol
+
+            resp (Left e) = YamlError e
+            resp (Right s) = Ok s
 
 jobStats :: ID -> Conn -> IO (Response JobStatsResponse)
 jobStats jid (Conn sock) =

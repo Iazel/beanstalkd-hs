@@ -2,16 +2,18 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 85fa739f6f92edc6994001f0c9cd46b3f8bff80c351e58aa9f4b70668099d335
+-- hash: 8386fe783f69a9dbeba8187885001a0ba57dce5f4b4ac605f5c212a96b430da3
 
 name:           Beanstalkd
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/Beanstalkd#readme>
-homepage:       https://github.com/githubuser/Beanstalkd#readme
-bug-reports:    https://github.com/githubuser/Beanstalkd/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2018 Author name here
+synopsis:       Beanstalkd client
+description:    Please see the README on GitHub at <https://github.com/iazel/beanstalkd-hs#readme>
+category:       Client
+homepage:       https://github.com/iazel/beanstalkd-hs#readme
+bug-reports:    https://github.com/iazel/beanstalkd-hs/issues
+author:         Salvatore Pelligra
+maintainer:     pelligra.s@gmail.com
+copyright:      2018 Salvatore Pelligra
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
@@ -22,7 +24,7 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/Beanstalkd
+  location: https://github.com/iazel/beanstalkd-hs
 
 library
   exposed-modules:

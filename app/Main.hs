@@ -14,7 +14,7 @@ main = withConn "localhost" "11300" loop
     where 
         loop :: Conn -> IO ()
         loop conn = do
-            -- put (Priority 100) (Seconds 1) (TTR 60) (Job $ pack "Hello, World!") conn >>= print
+            put (Priority 100) (Seconds 1) (TTR 60) (Job $ pack "Hello, World!") conn >>= print
             resp <- reserve conn
             print resp
             jobStats (jobId resp) conn >>= print
